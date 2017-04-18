@@ -42,7 +42,7 @@ public class Container {
 		}
 		Properties properties = null;
 		try {
-			InputStream in = this.getClass().getResourceAsStream(CONFIGURATION);
+			InputStream in = this.getClass().getResourceAsStream(CONFIGURATION+"");
 			if(in==null)
 				in=this.getClass().getResourceAsStream(DEFAULT_CONFIGURATION);
 			properties = new Properties();
