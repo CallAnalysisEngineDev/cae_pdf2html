@@ -2,6 +2,7 @@
 .project
 .classpath
 .settings/
+pdf2htmlEX/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
