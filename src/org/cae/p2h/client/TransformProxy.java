@@ -7,7 +7,7 @@ public class TransformProxy {
 	private TransformHandler handler =new TransformHandler();
 	
 	public void transform(){
-		handler.handler();
+		handler.handle();
 	}
 	
 }

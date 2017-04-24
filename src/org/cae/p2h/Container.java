@@ -49,7 +49,10 @@ public class Container {
 			properties.load(in);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
+		if(properties.size()==0)
+			return;
 		
 		initFileLocation(properties);
 		initThreadPool(properties);

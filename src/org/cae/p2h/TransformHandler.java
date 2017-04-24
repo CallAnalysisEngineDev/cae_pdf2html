@@ -9,7 +9,7 @@ import org.cae.p2h.task.TransformTaskFactory;
 
 public class TransformHandler {
 
-	public void handler(){
+	public void handle(){
 		Container container=Container.getCurrent();
 		File[] files=getPdfFile(container.getDataDir());
 		container.setTotalNum(files.length);
@@ -54,13 +54,10 @@ public class TransformHandler {
 			container.addFailNum();
 		}
 		int totalNum=container.getTotalNum();
+		System.out.println("文件"+fileName+"转化成功,目前进度为"+nowNum+"/"+totalNum);
 		if(nowNum==totalNum){
-			System.out.println("文件"+fileName+"转化成功,目前进度为"+nowNum+"/"+totalNum);
 			System.out.println("文件转换全部完成");
 			container.getThreadPool().shutdown();
-		}
-		else if(nowNum<totalNum){
-			System.out.println("文件"+fileName+"转化成功,目前进度为"+nowNum+"/"+totalNum);
 		}
 	}
 }
