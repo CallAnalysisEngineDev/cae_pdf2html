@@ -2,10 +2,14 @@ package org.cae.p2h.task;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cae.p2h.TransformHandler;
 
 public class WindowsTransformTask implements ITransformTask {
 
+	private Log logger=LogFactory.getLog(this.getClass());
+	
 	private String fileName;
 	private String destDir;//输出路径
 	private String dataDir;//输入路径
@@ -28,7 +32,7 @@ public class WindowsTransformTask implements ITransformTask {
 		 Runtime rt = Runtime.getRuntime();  
 		 try {
 			Process p = rt.exec(command);
-			System.out.println("文件"+fileName+"开始转化");
+			logger.info("文件"+fileName+"开始转化");
 			p.waitFor();
 			if(p.exitValue()==0){
 				handler.onFinish(fileName, true);
