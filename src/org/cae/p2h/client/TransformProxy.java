@@ -10,4 +10,7 @@ public class TransformProxy {
 		handler.handle();
 	}
 	
+	public static void main(String[] args){
+		new TransformProxy().transform();
+	}
 }

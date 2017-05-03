@@ -7,6 +7,10 @@ import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
 
 public class Rar2Pdf {
+	public static void main(String[] args){
+		pdfFileUnrar("pdf/1.rar"); 
+	}
+	
 	public static void pdfFileUnrar(String rarFilePath){
 		if(!rarFilePath.endsWith("rar")){
 			System.err.println("文件格式错误，请选择正确的rar文件");

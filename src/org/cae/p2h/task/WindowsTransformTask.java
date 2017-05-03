@@ -5,8 +5,8 @@ import org.cae.p2h.TransformHandler;
 public class WindowsTransformTask implements ITransformTask {
 
 	private String fileName;
-	private String destDir;
-	private String dataDir;
+	private String destDir;//输出路径
+	private String dataDir;//输入路径
 	private TransformHandler handler;
 	
 	public WindowsTransformTask(String fileName,String destDir,String dataDir,TransformHandler handler){
@@ -36,6 +36,16 @@ public class WindowsTransformTask implements ITransformTask {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}  
+	}
+
+	@Override
+	public void setDataDir(String dataDir) {
+		this.dataDir=dataDir;
+	}
+
+	@Override
+	public void setDestDir(String destDir) {
+		this.destDir=destDir;
 	}
 
 }
