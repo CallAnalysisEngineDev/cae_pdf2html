@@ -1,5 +1,7 @@
 package org.cae.p2h.task;
 
+import java.io.IOException;
+
 import org.cae.p2h.TransformHandler;
 
 public class WindowsTransformTask implements ITransformTask {
@@ -33,7 +35,14 @@ public class WindowsTransformTask implements ITransformTask {
 			}else{
 				handler.onFinish(fileName, false);
 			}
-		} catch (Exception e) {
+		}catch (IOException e){
+			try {
+				throw new Exception("没有找到pdf2htmlEX软件,请正确放置pdf2htmlEX于根目录位置");
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		 catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}

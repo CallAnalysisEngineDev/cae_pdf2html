@@ -132,6 +132,8 @@ public class Container {
 	}
 	
 	public void addFailNum(){
-		context.set(Context.FAIL_NUM, ((AtomicInteger) context.get(Context.FAIL_NUM)).incrementAndGet());
+		AtomicInteger failNum=(AtomicInteger) context.get(Context.FAIL_NUM);
+		failNum.incrementAndGet();
+		context.set(Context.FAIL_NUM, failNum);
 	}
 }

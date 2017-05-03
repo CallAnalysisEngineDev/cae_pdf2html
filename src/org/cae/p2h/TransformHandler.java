@@ -13,28 +13,36 @@ import org.cae.p2h.task.TransformTaskFactory;
 
 public class TransformHandler {
 
+	//倒数栅栏,用于检测是否全部转换任务都完成了
 	private CountDownLatch countdown;
 	
 	public void handle(){
 		Container container=Container.getCurrent();
 		File[] files=getPdfFile(container.getDataDir());
 		ExecutorService threadPool=container.getThreadPool();
+		//task的列表,先对文件进行分析,得到需要转换的pdf文件的总数量
 		List<ITransformTask> taskList=new ArrayList<ITransformTask>();
+		//所有解压后的文件夹名,先存放在这个list中,方便之后删除所有的解压文件夹
+		List<String> rarFileNames=new ArrayList<String>();
 		for(File file:files){
 			ITransformTask task = null;
+			//如果这是一个rar压缩文件
 			if(file.getName().toLowerCase().endsWith(".rar")){
+				//解压
 				Rar2Pdf.pdfFileUnrar(file.getPath());
 				String rarFileName=file.getName().substring(0, file.getName().indexOf("."));
+				rarFileNames.add(rarFileName);
 				File[] rarFiles=getPdfFile(container.getDataDir()+"/"+rarFileName);
+				//将解压出来的文件都设置好输入输出路径,然后加入taskList
 				for(File rarFile:rarFiles){
 					task=TransformTaskFactory.getTransformTask(rarFile.getName(), this);
 					task.setDataDir(container.getDataDir()+"/"+rarFileName);
 					task.setDestDir(container.getDestDir()+"/"+rarFileName);
 					taskList.add(task);
 				}
-				new File(container.getDataDir()+"/"+rarFileName).delete();
 			}
 			else{
+				//普通的pdf
 				task=TransformTaskFactory.getTransformTask(file.getName(), this);
 				taskList.add(task);
 			}
@@ -46,9 +54,27 @@ public class TransformHandler {
 		}
 		try {
 			countdown.await();
+			//最后要删除所有解压出来的文件夹
+			for(String rarFileName:rarFileNames){
+				deleteAllFilesOfDir(new File(container.getDataDir()+"/"+rarFileName));
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void deleteAllFilesOfDir(File path) {  
+	    if (!path.exists())  
+	        return;  
+	    if (path.isFile()) {  
+	        path.delete();  
+	        return;  
+	    }  
+	    File[] files = path.listFiles();  
+	    for (int i = 0; i < files.length; i++) {  
+	        deleteAllFilesOfDir(files[i]);  
+	    }  
+	    path.delete();  
 	}
 	
 	/**
