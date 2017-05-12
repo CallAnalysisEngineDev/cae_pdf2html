@@ -2,6 +2,8 @@ package org.cae.p2h;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cae.p2h.client.TransformResult;
 
 public class Container {
 
@@ -71,6 +74,7 @@ public class Container {
 		initThreadPool(properties);
 		context.set(Context.FINISH_NUM, new AtomicInteger());
 		context.set(Context.FAIL_NUM, new AtomicInteger());
+		context.set(Context.FAIL_LIST, new ArrayList<String>());
 		logger.info("当前的操作系统为:"+System.getProperty("os.name"));
 		context.set(Context.OPERATION_SYSTEM, System.getProperty("os.name"));
 	}
@@ -154,9 +158,21 @@ public class Container {
 		return (String) context.get(Context.OPERATION_SYSTEM);
 	}
 	
-	public void addFailNum(){
+	public void addFailNum(String fileName){
 		AtomicInteger failNum=(AtomicInteger) context.get(Context.FAIL_NUM);
 		failNum.incrementAndGet();
 		context.set(Context.FAIL_NUM, failNum);
+		List<String> failList=(List<String>) context.get(Context.FAIL_LIST);
+		failList.add(fileName);
+		context.set(Context.FAIL_LIST, failList);
+	}
+	
+	public int getFailNum(){
+		AtomicInteger failNum=(AtomicInteger) context.get(Context.FAIL_NUM);
+		return failNum.intValue();
+	}
+	
+	public List<String> getFailList(){
+		return (List<String>) context.get(Context.FAIL_LIST);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cae.p2h.client.TransformResult;
 import org.cae.p2h.task.ITransformTask;
 import org.cae.p2h.task.Rar2Pdf;
 import org.cae.p2h.task.TransformTaskFactory;
@@ -20,7 +21,7 @@ public class TransformHandler {
 	//倒数栅栏,用于检测是否全部转换任务都完成了
 	private CountDownLatch countdown;
 	
-	public void handle(){
+	public TransformResult handle(){
 		Container container=Container.getCurrent();
 		File[] files=getPdfFile(container.getDataDir());
 		ExecutorService threadPool=container.getThreadPool();
@@ -66,6 +67,17 @@ public class TransformHandler {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		TransformResult result;
+		int failNum=container.getFailNum();
+		if(failNum==0){
+			result=new TransformResult();
+		}
+		else{
+			List<String> failList=container.getFailList();
+			result=new TransformResult(failList);
+		}
+		return result;
 	}
 	
 	private static void deleteAllFilesOfDir(File path) {  
@@ -112,8 +124,8 @@ public class TransformHandler {
 		int nowNum=container.getFinishNum();
 		int totalNum=container.getTotalNum();
 		if(!isSuccessed){
-			container.addFailNum();
-			logger.info("文件"+fileName+"转化失败,目前进度为"+nowNum+"/"+totalNum);
+			container.addFailNum(fileName);
+			logger.info("文件"+fileName+"转化失败,目前进度为"+nowNum+"/"+totalNum+",目前已失败"+container.getFailNum()+"个文件");
 		}
 		else{
 			logger.info("文件"+fileName+"转化成功,目前进度为"+nowNum+"/"+totalNum);

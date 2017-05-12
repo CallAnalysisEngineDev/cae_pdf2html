@@ -10,8 +10,8 @@ public class TransformProxy {
 	
 	private TransformHandler handler =new TransformHandler();
 	
-	public void transform(){
+	public TransformResult transform(){
 		logger.info("pdf转换即将开始");
-		handler.handle();
+		return handler.handle();
 	}
 }

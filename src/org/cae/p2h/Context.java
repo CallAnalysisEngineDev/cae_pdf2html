@@ -19,7 +19,11 @@ public class Context {
 	
 	public final static String FAIL_NUM = "failNum";
 	
+	public final static String FAIL_LIST = "failList";
+	
 	public final static String OPERATION_SYSTEM = "operationSystem";
+	
+	public final static String RESULT = "result";
 	
 	public Object get(String key){
 		return context.get(key);
