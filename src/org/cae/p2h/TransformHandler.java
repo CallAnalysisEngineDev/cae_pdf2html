@@ -35,28 +35,23 @@ public class TransformHandler {
 			if (file.getName().toLowerCase().endsWith(".rar")) {
 				// 解压
 				Rar2Pdf.pdfFileUnrar(file.getPath());
-				String rarFileName = file.getName().substring(0,
-						file.getName().indexOf("."));
+				String rarFileName = file.getName().substring(0, file.getName().indexOf("."));
 				rarFileNames.add(rarFileName);
-				File[] rarFiles = getPdfFile(container.getDataDir() + "/"
-						+ rarFileName);
+				File[] rarFiles = getPdfFile(container.getDataDir() + "/" + rarFileName);
 				// 将解压出来的文件都设置好输入输出路径,然后加入taskList
 				for (File rarFile : rarFiles) {
-					task = TransformTaskFactory.getTransformTask(
-							rarFile.getName(), this);
+					task = TransformTaskFactory.getTransformTask(rarFile.getName(), this);
 					task.setDataDir(container.getDataDir() + "/" + rarFileName);
 					task.setDestDir(container.getDestDir() + "/" + rarFileName);
 					taskList.add(task);
 				}
 			} else {
 				// 普通的pdf
-				task = TransformTaskFactory.getTransformTask(file.getName(),
-						this);
+				task = TransformTaskFactory.getTransformTask(file.getName(), this);
 				taskList.add(task);
 			}
 		}
-		logger.info("pdf文件分析完毕,共有" + taskList.size() + "个pdf文件,其中rar文件"
-				+ rarFileNames.size() + "个");
+		logger.info("pdf文件分析完毕,共有" + taskList.size() + "个pdf文件,其中rar文件" + rarFileNames.size() + "个");
 		container.setTotalNum(taskList.size());
 		countdown = new CountDownLatch(taskList.size());
 		for (ITransformTask task : taskList) {
@@ -66,8 +61,7 @@ public class TransformHandler {
 			countdown.await();
 			// 最后要删除所有解压出来的文件夹
 			for (String rarFileName : rarFileNames) {
-				deleteAllFilesOfDir(new File(container.getDataDir() + "/"
-						+ rarFileName));
+				deleteAllFilesOfDir(new File(container.getDataDir() + "/" + rarFileName));
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -109,15 +103,12 @@ public class TransformHandler {
 		if (!file.exists()) {
 			file.mkdir();
 		}
-		File[] pdfFiles = new File(dataDir).listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String filename = pathname.getName().toLowerCase();
-				if (filename.endsWith(".pdf") || filename.endsWith(".rar")) {
-					return true;
-				} else {
-					return false;
-				}
+		File[] pdfFiles = new File(dataDir).listFiles((pathname) -> {
+			String filename = pathname.getName().toLowerCase();
+			if (filename.endsWith(".pdf") || filename.endsWith(".rar")) {
+				return true;
+			} else {
+				return false;
 			}
 		});
 		return pdfFiles;
@@ -130,11 +121,10 @@ public class TransformHandler {
 		int totalNum = container.getTotalNum();
 		if (!isSuccessed) {
 			container.addFailNum(fileName);
-			logger.info("文件" + fileName + "转化失败,目前进度为" + nowNum + "/"
-					+ totalNum + ",目前已失败" + container.getFailNum() + "个文件");
+			logger.info("文件" + fileName + "转化失败,目前进度为" + nowNum + "/" + totalNum + ",目前已失败" + container.getFailNum()
+					+ "个文件");
 		} else {
-			logger.info("文件" + fileName + "转化成功,目前进度为" + nowNum + "/"
-					+ totalNum);
+			logger.info("文件" + fileName + "转化成功,目前进度为" + nowNum + "/" + totalNum);
 		}
 		countdown.countDown();
 		if (nowNum == totalNum) {
